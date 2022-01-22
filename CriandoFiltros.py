@@ -40,11 +40,6 @@ try:
 except:
 	numberColors = list(dict.fromkeys(numberColors))
 
-desniveisScheduleBeams=[]
-for item in desniveisBeams:
-    if(item in desniveisFloors):
-        desniveisScheduleBeams.append(item)
-
 Colors=(Color(0,0,0),Color(0,0,255),Color(255,0,0),Color(0,255,0),Color(255,255,0))
 
 
@@ -65,7 +60,7 @@ def CreateFilter(valueDesnivel, category ):
   	rule=FilterDoubleRule(parameter,FilterNumericEquals(),valueDesnivel/30.48,0)
 	tipo=List[ElementId]()
 	tipo.Add(ElementId(BuiltInCategory.OST_StructuralFraming))
-  	filter=ParameterFilterElement.Create(doc,category+"  "+str(float(valueDesnivel)),tipo ,ElementParameterFilter(rule))
+  	filter=ParameterFilterElement.Create(doc,category+"   "+str(float(valueDesnivel)),tipo ,ElementParameterFilter(rule))
   	TransactionManager.Instance.TransactionTaskDone()
   elif(category == "LAJE"):
   	TransactionManager.Instance.EnsureInTransaction(doc)
@@ -73,7 +68,7 @@ def CreateFilter(valueDesnivel, category ):
   	rule=FilterDoubleRule(parameter,FilterNumericEquals(),valueDesnivel/30.48,0)
 	tipo=List[ElementId]()
 	tipo.Add(ElementId(BuiltInCategory.OST_Floors))
-  	filter=ParameterFilterElement.Create(doc,category+"  "+str(float(valueDesnivel)),tipo ,ElementParameterFilter(rule))
+  	filter=ParameterFilterElement.Create(doc,category+"   "+str(float(valueDesnivel)),tipo ,ElementParameterFilter(rule))
   	TransactionManager.Instance.TransactionTaskDone()
   return filter
  
@@ -86,7 +81,10 @@ for elem in desniveis:
 categoriesSchedule = [desniveis[x][1] for x in range(len(desniveis))]
 categoriesSchedule = list(dict.fromkeys(categoriesSchedule))
 
-
+desniveisScheduleBeams=[]
+for item in desniveisBeams:
+    if(item in desniveisFloors):
+        desniveisScheduleBeams.append(item)
 
 
 

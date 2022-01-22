@@ -66,21 +66,24 @@ sf= sd.GetSchedulableFields()"""
 def CreateSchedule(category):
 	
 	schedule= ViewSchedule.CreateSchedule(doc, category)
-	schedulablefield= schedule.Definition.GetSchedulableFields()
 	sd=schedule.Definition
+	schedulablefields= sd.GetSchedulableFields()
 	
-	for field in schedulablefield:
-		if(field.GetName(doc)=="Level" or field.GetName(doc)=="Reference Level"):
+	for field in schedulablefields:
+		if( (field.GetName(doc)=="Level" and category==ElementId(BuiltInCategory.OST_Floors)) or (field.GetName(doc)=="Reference Level" and category==ElementId(BuiltInCategory.OST_StructuralFraming))  ):
 			sd.InsertField(field,0).ColumnHeading="Nível de referência"
-			fieldId=sd.GetFieldId(0)
-			sd.InsertFilter(ScheduleFilter(fieldId, ScheduleFilterType.Equal,allLevels[0].Id), 0)  
+			#fieldId=sd.GetFieldId(0)
+			#sd.InsertFilter(ScheduleFilter(fieldId, ScheduleFilterType.Equal,allLevels[0].Id), 0)  
 		elif(field.GetName(doc)=="Height Offset From Level" or field.GetName(doc)=="z Offset Value"):
 			sd.InsertField(field,0).ColumnHeading="Desnível"
 		elif(field.GetName(doc)=="Mark"):
 			sd.InsertField(field,0).ColumnHeading="Cor"
-			
+	if(category ==ElementId(BuiltInCategory.OST_StructuralFraming)):
+		sd.ShowHeaders=False
+		sd.ShowTitle=False
+	
 
-
+CreateSchedule(ElementId(BuiltInCategory.OST_StructuralFraming))
 CreateSchedule(ElementId(BuiltInCategory.OST_Floors))
 
 """for field in sf:

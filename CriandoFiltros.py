@@ -16,10 +16,6 @@ doc=DocumentManager.Instance.CurrentDBDocument
 app=DocumentManager.Instance.CurrentUIApplication.Application
 #First construct an ICollection of StructuralFraming and Structural Column Categories:
 
-
-
-
-
 desniveis=[]
 numberColors=[]
 
@@ -80,11 +76,19 @@ def CreateFilter(valueDesnivel, category ):
   	filter=ParameterFilterElement.Create(doc,category+"  "+str(float(valueDesnivel)),tipo ,ElementParameterFilter(rule))
   	TransactionManager.Instance.TransactionTaskDone()
   return filter
-  
-#FillPatternElement.Create(doc,FillPattern())
-
-
+ 
 for elem in desniveis:
  x=CreateFilter(elem[0],elem[1])
  color=Colors[numberColors.index(elem[0])]
  InsertFilter(doc.ActiveView, x, color)
+
+
+categoriesSchedule = [desniveis[x][1] for x in range(len(desniveis))]
+categoriesSchedule = list(dict.fromkeys(categoriesSchedule))
+
+
+
+
+
+
+OUT= categoriesSchedule

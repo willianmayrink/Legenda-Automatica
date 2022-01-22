@@ -37,12 +37,8 @@ doc = DocumentManager.Instance.CurrentDBDocument #Finally, setting up handles to
 uiapp = DocumentManager.Instance.CurrentUIApplication #Setting a handle to the active Revit UI document
 app = uiapp.Application  #Setting a handle to the currently-open instance of the Revit application
 uidoc = uiapp.ActiveUIDocument #Setting a handle to the currently-open
-import pandas as pd
 
 #  ===================================  !!! =======================================
-
-#       stage
-# pegar lajes e vigas da vista
 
 allSchedules = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Schedules).ToElements()
 allLevels = FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Levels).OfClass(Level).ToElements()
@@ -62,21 +58,42 @@ newFilter = ScheduleFilter(newSchedule.Definition.GetFieldId(0), ScheduleFilterT
 
 
 TransactionManager.Instance.EnsureInTransaction(doc)
-b= ViewSchedule.CreateSchedule(doc,ElementId(BuiltInCategory.OST_Floors))
+"""b= ViewSchedule.CreateSchedule(doc,ElementId(BuiltInCategory.OST_Floors))
 sd= b.Definition
-sf= sd.GetSchedulableFields()
-
+sf= sd.GetSchedulableFields()"""
 #FAZER UMA FUNÇÃO PARA CRIAR TABELA
-for field in sf:
-	if(field.GetName(doc)=="Level"):
+
+def CreateSchedule(category):
+	
+	schedule= ViewSchedule.CreateSchedule(doc, category)
+	schedulablefield= schedule.Definition.GetSchedulableFields()
+	sd=schedule.Definition
+	
+	for field in schedulablefield:
+		if(field.GetName(doc)=="Level" or field.GetName(doc)=="Reference Level"):
+			sd.InsertField(field,0).ColumnHeading="Nível de referência"
+			fieldId=sd.GetFieldId(0)
+			sd.InsertFilter(ScheduleFilter(fieldId, ScheduleFilterType.Equal,allLevels[0].Id), 0)  
+		elif(field.GetName(doc)=="Height Offset From Level" or field.GetName(doc)=="z Offset Value"):
+			sd.InsertField(field,0).ColumnHeading="Desnível"
+		elif(field.GetName(doc)=="Mark"):
+			sd.InsertField(field,0).ColumnHeading="Cor"
+			
+
+
+CreateSchedule(ElementId(BuiltInCategory.OST_Floors))
+
+"""for field in sf:
+	if(field.GetName(doc)=="Level" or field.GetName(doc)=="Reference Level"):
 		b.Definition.InsertField(field,0).ColumnHeading="Nível de referência"
 		fieldId=b.Definition.GetFieldId(0)
 		b.Definition.InsertFilter(ScheduleFilter(fieldId, ScheduleFilterType.Equal,allLevels[0].Id), 0)  
-	elif(field.GetName(doc)=="Height Offset From Level"):
+	elif(field.GetName(doc)=="Height Offset From Level" or field.GetName(doc)=="z Offset Value"):
 		b.Definition.InsertField(field,0).ColumnHeading="Desnível"
 	elif(field.GetName(doc)=="Mark"):
 		b.Definition.InsertField(field,0).ColumnHeading="Cor"
 		fieldId=b.Definition.GetFieldId(0)
+		"""
 		#b.Definition.InsertFilter(ScheduleFilter(fieldId,ScheduleFilterType.Equal,"aaa"),0)
 		#b.Definition.InsertField(ScheduleFieldType.Instance, ElementId[BuiltInParameter.ALL_MODEL_MARK], 0)
 		
@@ -87,7 +104,16 @@ for field in sf:
 
 
 #FAZER UMA FUNÇÃO PARA ADICIONAR TABELA EM UMA SHEET.
+#def InsertSchedule( sheet, schedule,        ):
+
+
+#def InsertColorSymbol ( ):
+
+
+
+
 
 
 TransactionManager.Instance.TransactionTaskDone()
 
+OUT= 0

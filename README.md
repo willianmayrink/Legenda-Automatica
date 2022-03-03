@@ -1,4 +1,4 @@
-# Legenda-Automatica
+# Legenda-Automatica - PythonDynamoRevitAPI
 
 Plugin para criação de legendas automaticas para desniveis no software Revit.
 
